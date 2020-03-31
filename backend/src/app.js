@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const verification = require("./services/middleware");
 
 // ** Routes
 
@@ -14,6 +15,7 @@ mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
+  connectTimeoutMS: 1000,
   useFindAndModify: false
 });
 
@@ -35,5 +37,5 @@ app.use(function(req, res, next) {
 });
 console.log("server connected");
 app.use("/api/users", require("./routes/users"));
-
+app.use("/api/todo", verification, require("./routes/todo"));
 module.exports = app;

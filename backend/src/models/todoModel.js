@@ -10,8 +10,11 @@ const todoSchema = new mongoose.Schema({
     default: false
   },
   user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: userModel
+    // We don't really need reference in our cases so going with basic flow
+    // type: mongoose.Schema.Types.ObjectId,
+    // ref: userModel,
+    type: String,
+    required: true
   },
   created_on: {
     type: Date,

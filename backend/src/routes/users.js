@@ -29,7 +29,7 @@ router.post(
       let user = await User.findOne({ email });
       if (user) {
         return res
-          .status(400)
+          .status(409)
           .json({ errors: [{ msg: "User already exists" }] }); // to prevent mongo duplication errors
       }
 
@@ -48,15 +48,14 @@ router.post(
           id: user.id
         }
       };
-      jwt.sign(
-        payload,
-        process.env.JWTSECRET,
-        { expiresIn: "1d" },
-        (err, token) => {
-          if (err) throw err;
-          return res.status(200).json({ status: "pass", token });
-        }
-      );
+
+      return res.status(200).json({
+        status: "pass",
+        token: jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn: "1d"
+        }),
+        id: user._id
+      });
     } catch (error) {
       console.error(error.message);
       return res.status(500).json({ status: "fail", mesasge: "Server Error" });
@@ -99,18 +98,16 @@ router.post(
           id: user.id
         }
       };
-      jwt.sign(
-        payload,
-        process.env.JWTSECRET,
-        { expiresIn: "1d" },
-        (err, token) => {
-          if (err) throw err;
-          return res.status(200).json({ status: "pass", token });
-        }
-      );
+      return res.status(200).json({
+        status: "pass",
+        token: jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn: "1d"
+        }),
+        id: user._id
+      });
     } catch (error) {
       console.error(error.message);
-      return res.status(500).json({ status: "fail", mesasge: "Server Error" });
+      return res.status(500).json({ status: "fail", message: "Server Error" });
     }
     // console.log(req.body);
   }
